@@ -1,0 +1,745 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body, .root {
+    font-family: 'Inter', var(--font-sans), sans-serif;
+    background: #0a0e1a;
+    min-height: 100vh;
+    padding: 0;
+    position: relative;
+  }
+
+  .bg-animated {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .bg-gradient {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    animation: float 20s infinite ease-in-out;
+  }
+
+  .bg-g1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, #00d4ff 0%, transparent 70%);
+    top: -10%;
+    left: -5%;
+    animation-delay: 0s;
+  }
+
+  .bg-g2 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #0080ff 0%, transparent 70%);
+    top: 30%;
+    right: -10%;
+    animation-delay: 7s;
+  }
+
+  .bg-g3 {
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, #00bfff 0%, transparent 70%);
+    bottom: -5%;
+    left: 20%;
+    animation-delay: 14s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, -50px) scale(1.1); }
+    66% { transform: translate(-30px, 40px) scale(0.9); }
+  }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+  }
+
+  .hero {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(10,14,26,0.6) 0%, rgba(13,17,35,0.9) 100%);
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(0,212,255,0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  .terminal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(22,27,34,0.8);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 20px;
+    padding: 4px 14px 4px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #7ee787;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 20px rgba(0,212,255,0.2);
+  }
+
+  .dot { 
+    width: 8px; 
+    height: 8px; 
+    border-radius: 50%; 
+    background: #7ee787; 
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 10px #7ee787;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  .hero h1 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: #e6edf3;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+  }
+
+  .hero h1 span { 
+    background: linear-gradient(135deg, #00d4ff 0%, #0080ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));
+    font-weight: 700;
+  }
+
+  .hero p {
+    color: #8b949e;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    font-weight: 400;
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat { text-align: center; }
+  .stat-num { 
+    font-size: 1.5rem; 
+    font-weight: 600; 
+    background: linear-gradient(135deg, #00d4ff 0%, #0080ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stat-label { font-size: 11px; color: #6e7681; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
+
+  .nav {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: rgba(13,17,26,0.9);
+    border-bottom: 1px solid rgba(0,212,255,0.15);
+    overflow-x: auto;
+    scrollbar-width: none;
+    backdrop-filter: blur(10px);
+  }
+  .nav::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    position: relative;
+    padding: 0.6rem 1.5rem;
+    background: rgba(22,27,34,0.6);
+    border: 1px solid rgba(33,38,45,0.8);
+    border-radius: 8px;
+    color: #8b949e;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  .nav-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1) 0%, rgba(0,128,255,0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .nav-btn:hover { 
+    color: #e6edf3;
+    border-color: rgba(0,212,255,0.4);
+    transform: translateY(-2px);
+  }
+
+  .nav-btn:hover::before {
+    opacity: 1;
+  }
+
+  .nav-btn.active { 
+    background: linear-gradient(135deg, rgba(0,212,255,0.15) 0%, rgba(0,128,255,0.15) 100%);
+    color: #00d4ff;
+    border-color: rgba(0,212,255,0.6);
+    box-shadow: 0 0 20px rgba(0,212,255,0.2), inset 0 0 20px rgba(0,212,255,0.1);
+    text-shadow: 0 0 10px rgba(0,212,255,0.5);
+  }
+
+  .nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #00d4ff 50%, transparent 100%);
+    box-shadow: 0 0 10px rgba(0,212,255,0.8);
+  }
+
+  .content { 
+    position: relative;
+    z-index: 1;
+    padding: 2rem 1.5rem; 
+    max-width: 860px; 
+    margin: 0 auto; 
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #00d4ff;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(0,212,255,0.2);
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 10px rgba(0,212,255,0.3);
+  }
+
+  .lang-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .lang-card {
+    background: rgba(22,27,34,0.6);
+    border: 1px solid rgba(33,38,45,0.8);
+    border-radius: 10px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    backdrop-filter: blur(10px);
+  }
+  .lang-card:hover { 
+    border-color: rgba(0,212,255,0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,212,255,0.15);
+  }
+  .lang-card.selected { 
+    border-color: var(--lc);
+    box-shadow: 0 0 20px rgba(0,212,255,0.2);
+  }
+
+  .lang-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+
+  .lang-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  .lang-name { font-size: 1rem; font-weight: 500; color: #e6edf3; }
+  .lang-type { font-size: 11px; color: #6e7681; margin-top: 1px; }
+
+  .skill-bar-wrap { margin-bottom: 8px; }
+  .skill-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: #8b949e; margin-bottom: 4px; }
+  .skill-bar-track { background: rgba(13,17,23,0.8); border-radius: 3px; height: 4px; overflow: hidden; }
+  .skill-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+
+  .lang-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .tag {
+    font-size: 10px; padding: 2px 8px; border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(13,17,23,0.8); color: #8b949e; border: 1px solid rgba(33,38,45,0.8);
+  }
+
+  .code-panel {
+    background: rgba(13,17,23,0.8);
+    border: 1px solid rgba(33,38,45,0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 1.5rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.7rem 1rem;
+    background: rgba(22,27,34,0.8);
+    border-bottom: 1px solid rgba(33,38,45,0.8);
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .cd-r { background: #ff5f56; }
+  .cd-y { background: #ffbd2e; }
+  .cd-g { background: #27c93f; }
+
+  .code-filename { font-size: 12px; color: #6e7681; font-family: 'JetBrains Mono', monospace; margin-left: 4px; }
+
+  .code-body {
+    padding: 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #c9d1d9;
+    overflow-x: auto;
+    white-space: pre;
+    tab-size: 2;
+  }
+
+  .c-kw { color: #ff7b72; }
+  .c-fn { color: #d2a8ff; }
+  .c-str { color: #a5d6ff; }
+  .c-cm { color: #6e7681; font-style: italic; }
+  .c-num { color: #f0883e; }
+  .c-ty { color: #ffa657; }
+  .c-var { color: #79c0ff; }
+
+  .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+
+  .project-card {
+    background: rgba(22,27,34,0.6);
+    border: 1px solid rgba(33,38,45,0.8);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    backdrop-filter: blur(10px);
+  }
+  .project-card:hover { 
+    border-color: rgba(0,212,255,0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,212,255,0.15);
+  }
+  .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+  .project-name { 
+    font-size: 14px; 
+    font-weight: 500; 
+    color: #00d4ff;
+    font-family: 'JetBrains Mono', monospace;
+    text-shadow: 0 0 10px rgba(0,212,255,0.3);
+  }
+  .project-star { font-size: 12px; color: #f0883e; }
+  .project-desc { font-size: 12px; color: #8b949e; line-height: 1.5; margin-bottom: 0.75rem; }
+  .project-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .lang-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .project-lang { font-size: 11px; color: #8b949e; }
+  .project-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: rgba(0,212,255,0.1);
+    color: #00d4ff;
+    border: 1px solid rgba(0,212,255,0.2);
+  }
+
+  .about-card {
+    background: rgba(22,27,34,0.6);
+    border: 1px solid rgba(33,38,45,0.8);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(10px);
+  }
+  .about-card h3 { font-size: 14px; font-weight: 500; color: #e6edf3; margin-bottom: 0.75rem; }
+  .about-card p { font-size: 13px; color: #8b949e; line-height: 1.7; }
+
+  #lang-detail {
+    margin-top: 1.5rem;
+    background: rgba(22,27,34,0.6);
+    border: 1px solid rgba(33,38,45,0.8);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: none;
+    backdrop-filter: blur(10px);
+  }
+  #lang-detail.show { display: block; }
+  #lang-detail h3 { font-size: 14px; font-weight: 500; color: #e6edf3; margin-bottom: 0.5rem; }
+  #lang-detail p { font-size: 13px; color: #8b949e; line-height: 1.6; }
+
+  .contrib-grid {
+    display: grid;
+    grid-template-columns: repeat(52, 1fr);
+    gap: 2px;
+    margin-top: 0.5rem;
+  }
+  .contrib-cell {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    background: rgba(22,27,34,0.8);
+    min-width: 0;
+  }
+  .contrib-cell.l1 { background: #0e4429; }
+  .contrib-cell.l2 { background: #006d32; }
+  .contrib-cell.l3 { background: #26a641; }
+  .contrib-cell.l4 { background: #39d353; box-shadow: 0 0 4px rgba(57,211,83,0.4); }
+
+  @media (max-width: 500px) {
+    .hero h1 { font-size: 1.7rem; }
+    .stats-row { gap: 1.5rem; }
+    .contrib-grid { grid-template-columns: repeat(26, 1fr); }
+  }
+</style>
+
+<div class="bg-animated">
+  <div class="bg-gradient bg-g1"></div>
+  <div class="bg-gradient bg-g2"></div>
+  <div class="bg-gradient bg-g3"></div>
+  <div class="grid-overlay"></div>
+</div>
+
+<div class="root">
+  <div class="hero">
+    <div class="terminal-badge"><div class="dot"></div>~/dev $ whoami</div>
+    <h1>Merhaba, Ben <span>SzySzy</span></h1>
+    <p>Multi-language software engineer · Systems & backend specialist</p>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Dil</div></div>
+      <div class="stat"><div class="stat-num">3+</div><div class="stat-label">Yıl</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Dostlarımız</div></div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showTab('langs', this)">Diller</button>
+    <button class="nav-btn" onclick="showTab('projects', this)">Projeler</button>
+    <button class="nav-btn" onclick="showTab('contribs', this)">Aktivite</button>
+  </nav>
+
+  <div class="content">
+
+    <div id="tab-langs" class="section active">
+      <p class="section-title">// programlama dilleri</p>
+      <div class="lang-grid" id="langGrid"></div>
+      <div id="lang-detail"></div>
+    </div>
+
+    <div id="tab-projects" class="section">
+      <p class="section-title">// öne çıkan projeler</p>
+      <div class="project-grid" id="projectGrid"></div>
+    </div>
+
+    <div id="tab-contribs" class="section">
+      <p class="section-title">// aktivite haritası</p>
+      <div class="about-card">
+        <div class="contrib-grid" id="contribGrid"></div>
+        <p style="font-size:11px;color:#6e7681;margin-top:10px;font-family:'JetBrains Mono',monospace;">son 52 hafta</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1rem;">
+        <div class="about-card" style="text-align:center;">
+          <div style="font-size:1.5rem;font-weight:600;color:#39d353;font-family:'JetBrains Mono',monospace;">847</div>
+          <div style="font-size:11px;color:#6e7681;text-transform:uppercase;letter-spacing:.8px;margin-top:4px;">Toplam commit</div>
+        </div>
+        <div class="about-card" style="text-align:center;">
+          <div style="font-size:1.5rem;font-weight:600;color:#00d4ff;font-family:'JetBrains Mono',monospace;">12</div>
+          <div style="font-size:11px;color:#6e7681;text-transform:uppercase;letter-spacing:.8px;margin-top:4px;">Aktif repo</div>
+        </div>
+        <div class="about-card" style="text-align:center;">
+          <div style="font-size:1.5rem;font-weight:600;color:#d2a8ff;font-family:'JetBrains Mono',monospace;">38</div>
+          <div style="font-size:11px;color:#6e7681;text-transform:uppercase;letter-spacing:.8px;margin-top:4px;">PR merge</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const langs = [
+  {
+    name: 'Python', short: 'Py', type: 'Scripting · Backend · AI/ML',
+    color: '#3572a5', bg: '#1a2a3a',
+    skills: [{l:'Genel kullanım',v:90},{l:'Veri / Otomasyon',v:85},{l:'Web (Flask/Django)',v:75}],
+    tags: ['scripting','automation','data','backend','AI'],
+    desc: 'Python benim ana dilim. Otomasyon scriptlerinden makine öğrenmesi pipeline\'larına kadar her şeyde kullanıyorum. Temiz ve okunabilir kodu seviyorum.',
+    snippet: `<span class="c-cm"># fibonacci dizisi üreteci</span>
+<span class="c-kw">def</span> <span class="c-fn">fibonacci</span>(n: <span class="c-ty">int</span>) -> <span class="c-ty">list</span>[<span class="c-ty">int</span>]:
+    seq = [<span class="c-num">0</span>, <span class="c-num">1</span>]
+    <span class="c-kw">while</span> <span class="c-fn">len</span>(seq) < n:
+        seq.append(seq[<span class="c-num">-1</span>] + seq[<span class="c-num">-2</span>])
+    <span class="c-kw">return</span> seq
+
+<span class="c-kw">print</span>(fibonacci(<span class="c-num">10</span>))`,
+    file: 'fibonacci.py'
+  },
+  {
+    name: 'Lua', short: 'Lu', type: 'Scripting · Gömülü · Oyun',
+    color: '#00007c', bg: '#0d0d2b',
+    skills: [{l:'Game scripting',v:80},{l:'Gömülü entegrasyon',v:70},{l:'Config / DSL',v:65}],
+    tags: ['game-dev','scripting','embedded','lightweight'],
+    desc: 'Lua\'yı oyun modlama ve gömülü sistemlerde kullanıyorum. Minimize dil boyutu ile maksimum esneklik — hafif ama güçlü.',
+    snippet: `<span class="c-cm">-- vektör sınıfı</span>
+<span class="c-ty">Vector</span> = {}
+<span class="c-ty">Vector</span>.__index = <span class="c-ty">Vector</span>
+
+<span class="c-kw">function</span> <span class="c-fn">Vector.new</span>(x, y)
+  <span class="c-kw">return</span> setmetatable({x=x, y=y}, <span class="c-ty">Vector</span>)
+<span class="c-kw">end</span>
+
+<span class="c-kw">function</span> <span class="c-ty">Vector</span>:<span class="c-fn">length</span>()
+  <span class="c-kw">return</span> math.sqrt(self.x^<span class="c-num">2</span> + self.y^<span class="c-num">2</span>)
+<span class="c-kw">end</span>`,
+    file: 'vector.lua'
+  },
+  {
+    name: 'Java', short: 'Jv', type: 'OOP · Enterprise · Backend',
+    color: '#b07219', bg: '#2a1e0d',
+    skills: [{l:'OOP & Design patterns',v:82},{l:'Spring Framework',v:68},{l:'Concurrency',v:72}],
+    tags: ['OOP','enterprise','backend','JVM','spring'],
+    desc: 'Java ile büyük ölçekli uygulamalar geliştiriyorum. Tasarım kalıpları ve nesne yönelimli programlama konusunda güçlüyüm.',
+    snippet: `<span class="c-cm">// Generic stack implementasyonu</span>
+<span class="c-kw">public class</span> <span class="c-ty">Stack</span><<span class="c-ty">T</span>> {
+  <span class="c-kw">private</span> <span class="c-ty">List</span><<span class="c-ty">T</span>> items = <span class="c-kw">new</span> <span class="c-ty">ArrayList</span><>();
+
+  <span class="c-kw">public void</span> <span class="c-fn">push</span>(<span class="c-ty">T</span> item) {
+    items.add(item);
+  }
+
+  <span class="c-kw">public</span> <span class="c-ty">T</span> <span class="c-fn">pop</span>() {
+    <span class="c-kw">if</span> (items.isEmpty()) <span class="c-kw">throw new</span> <span class="c-ty">EmptyStackException</span>();
+    <span class="c-kw">return</span> items.remove(items.size() - <span class="c-num">1</span>);
+  }
+}`,
+    file: 'Stack.java'
+  },
+  {
+    name: 'C+', short: 'C+', type: 'Sistem · Performans · Düşük seviye',
+    color: '#f34b7d', bg: '#2a0d18',
+    skills: [{l:'Bellek yönetimi',v:78},{l:'Sistem programlama',v:75},{l:'Performans opt.',v:70}],
+    tags: ['systems','memory','performance','low-level'],
+    desc: 'C+ ile sistem seviyesi programlama yapıyorum. Bellek yönetimi ve performans optimizasyonu konularında deneyimliyim.',
+    snippet: `<span class="c-cm">// Akıllı işaretçi kullanımı</span>
+<span class="c-kw">#include</span> <span class="c-str"><memory></span>
+
+<span class="c-kw">struct</span> <span class="c-ty">Node</span> {
+  <span class="c-ty">int</span> <span class="c-var">value</span>;
+  std::<span class="c-ty">unique_ptr</span><<span class="c-ty">Node</span>> <span class="c-var">next</span>;
+  
+  <span class="c-fn">Node</span>(<span class="c-ty">int</span> v) : <span class="c-var">value</span>(v), <span class="c-var">next</span>(<span class="c-kw">nullptr</span>) {}
+};
+
+<span class="c-kw">auto</span> <span class="c-var">head</span> = std::<span class="c-fn">make_unique</span><<span class="c-ty">Node</span>>(<span class="c-num">42</span>);`,
+    file: 'linked_list.cpp'
+  },
+  {
+    name: 'Rust', short: 'Rs', type: 'Güvenli · Hızlı · Sistem',
+    color: '#dea584', bg: '#2a1a10',
+    skills: [{l:'Ownership & Borrowing',v:74},{l:'Async / Tokio',v:62},{l:'CLI araçlar',v:78}],
+    tags: ['ownership','memory-safe','async','performance','systems'],
+    desc: 'Rust ile güvenli ve yüksek performanslı sistem programları yazıyorum. Ownership modeli başta zorlu geldi ama artık seviyorum.',
+    snippet: `<span class="c-cm">// Result tipi ile hata yönetimi</span>
+<span class="c-kw">use</span> std::fs;
+
+<span class="c-kw">fn</span> <span class="c-fn">read_config</span>(path: &<span class="c-ty">str</span>) -> <span class="c-ty">Result</span><<span class="c-ty">String</span>, <span class="c-ty">String</span>> {
+  fs::<span class="c-fn">read_to_string</span>(path)
+    .<span class="c-fn">map_err</span>(|e| <span class="c-fn">format!</span>(<span class="c-str">"Hata: {}"</span>, e))
+}
+
+<span class="c-kw">fn</span> <span class="c-fn">main</span>() {
+  <span class="c-kw">match</span> <span class="c-fn">read_config</span>(<span class="c-str">"config.toml"</span>) {
+    <span class="c-ty">Ok</span>(cfg) => <span class="c-fn">println!</span>(<span class="c-str">"{}"</span>, cfg),
+    <span class="c-ty">Err</span>(e)  => <span class="c-fn">eprintln!</span>(<span class="c-str">"{}"</span>, e),
+  }
+}`,
+    file: 'main.rs'
+  }
+];
+
+const projects = [
+  { 
+    name: 'python-obfuscator', 
+    desc: 'Gelişmiş Python kod gizleme ve koruma aracı', 
+    lang: 'Python', 
+    color: '#3572a5', 
+    stars: 156,
+    tags: ['obfuscation', 'security']
+  },
+  { 
+    name: 'class-decompiler', 
+    desc: 'JVM bytecode analiz ve decompile motoru', 
+    lang: 'Java', 
+    color: '#b07219', 
+    stars: 89,
+    tags: ['JVM', 'reverse-eng']
+  },
+  { 
+    name: 'jvm-loader', 
+    desc: 'Dinamik JVM class yükleyici ve runtime manipülatör', 
+    lang: 'Java', 
+    color: '#b07219', 
+    stars: 124,
+    tags: ['JVM', 'runtime']
+  },
+  { 
+    name: 'discord-sniper-v2', 
+    desc: 'Discord token ve hesap yönetim platformu v2', 
+    lang: 'Python', 
+    color: '#3572a5', 
+    stars: 203,
+    tags: ['discord', 'automation']
+  },
+  { 
+    name: 'ovh-bypass', 
+    desc: '120Gbit+ EU TCP flood koruması - no bypass sürümü', 
+    lang: 'Rust', 
+    color: '#dea584', 
+    stars: 67,
+    tags: ['#eu', 'tcp', 'nobypass']
+  },
+  { 
+    name: 'network-stress', 
+    desc: 'Ağ dayanıklılık test ve stres aracı', 
+    lang: 'C+', 
+    color: '#f34b7d', 
+    stars: 92,
+    tags: ['network', 'stress-test']
+  }
+];
+
+function buildLangs() {
+  const grid = document.getElementById('langGrid');
+  langs.forEach((l, i) => {
+    const card = document.createElement('div');
+    card.className = 'lang-card';
+    card.style.setProperty('--lc', l.color);
+    card.innerHTML = `
+      <div class="lang-header">
+        <div class="lang-icon" style="background:${l.bg};color:${l.color};">${l.short}</div>
+        <div><div class="lang-name">${l.name}</div><div class="lang-type">${l.type}</div></div>
+      </div>
+      ${l.skills.map(s => `
+        <div class="skill-bar-wrap">
+          <div class="skill-bar-label"><span>${s.l}</span><span>${s.v}%</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0%;background:${l.color}" data-w="${s.v}"></div></div>
+        </div>`).join('')}
+      <div class="lang-tags">${l.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
+    card.onclick = () => showLangDetail(i, card);
+    grid.appendChild(card);
+  });
+  setTimeout(animateBars, 200);
+}
+
+function animateBars() {
+  document.querySelectorAll('.skill-bar-fill').forEach(el => {
+    el.style.width = el.dataset.w + '%';
+  });
+}
+
+let selectedCard = null;
+function showLangDetail(i, card) {
+  const l = langs[i];
+  const detail = document.getElementById('lang-detail');
+  if (selectedCard === card && detail.classList.contains('show')) {
+    detail.classList.remove('show');
+    card.classList.remove('selected');
+    selectedCard = null;
+    return;
+  }
+  if (selectedCard) selectedCard.classList.remove('selected');
+  selectedCard = card;
+  card.classList.add('selected');
+  detail.classList.add('show');
+  detail.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+      <h3 style="color:${l.color}">${l.name} — kod örneği</h3>
+      <span style="font-size:11px;color:#6e7681;">${l.file}</span>
+    </div>
+    <p style="font-size:13px;color:#8b949e;margin-bottom:1rem;">${l.desc}</p>
+    <div class="code-panel">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
+        <span class="code-filename">${l.file}</span>
+      </div>
+      <div class="code-body">${l.snippet}</div>
+    </div>`;
+  detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function buildProjects() {
+  const grid = document.getElementById('projectGrid');
+  projects.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.innerHTML = `
+      <div class="project-header">
+        <span class="project-name">${p.name}</span>
+        <span class="project-star">★ ${p.stars}</span>
+      </div>
+      <p class="project-desc">${p.desc}</p>
+      <div class="project-foot">
+        <div class="lang-dot" style="background:${p.color}"></div>
+        <span class="project-lang">${p.lang}</span>
+        ${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function buildContribs() {
+  const grid = document.getElementById('contribGrid');
+  const levels = ['', 'l1', 'l2', 'l3', 'l4'];
+  for (let i = 0; i < 364; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'contrib-cell';
+    const r = Math.random();
+    if (r > 0.6) {
+      const lvl = Math.ceil(r * 4);
+      cell.classList.add(levels[Math.min(lvl, 4)]);
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'langs') setTimeout(animateBars, 100);
+}
+
+buildLangs();
+buildProjects();
+buildContribs();
+</script>
